@@ -1,0 +1,100 @@
+function arrayShuffle(array) {
+    for(let i = (array.length - 1); 0 < i; i--){
+      let r = Math.floor(Math.random() * (i + 1));
+      let tmp = array[i];
+      array[i] = array[r];
+      array[r] = tmp;
+    }
+    return array;
+  }
+
+function process() {
+    var colors = [
+        "VIOLET",
+        "PINK",
+        "DRED",
+        "RED",
+        "ORANGE",
+        "YELLOW",
+        "BROWN",
+        "GRAY",
+        "WHITE",
+        "DGREEN",
+        "LGREEN",
+        "BGREEN",
+        "DBLUE",
+        "LBLUE",
+        "LPINK",
+    ]
+    ["YELLOW","BGREEN","GRAY"].forEach(unusedColor => {
+        colors = colors.filter(n => n !== unusedColor)
+    })
+    var current = [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        ["AIR","AIR","AIR","AIR"],
+        ["AIR","AIR","AIR","AIR"],
+    ]
+    
+    let numbersByColor = {}
+    colors.forEach(color => {
+        numbersByColor[color] = 0;
+    })
+    
+    let totalCapacity = 0
+    current.forEach(bottle => {
+        totalCapacity += 4 - bottle.length;
+        bottle.forEach(liquid => {
+                numbersByColor[liquid] += 1
+        })
+    })
+    for (var j = 0; j < current.length; j++) {
+        console.log(`bottle: ${j+1}`)
+        if(current[j].length >= 4) {
+            continue
+        }
+        for (var i = 0; i < 4 - current[j].length; i++) {
+            let currentBottleLastColor = current[j][current[j].length-1]
+            colors = arrayShuffle(colors);
+            for (var k = 0; k < colors.length; k++ ) {
+                if (current[j].length >= 4) {
+                    continue;
+                }
+                if (currentBottleLastColor === colors[k]) {
+                    continue;
+                }
+                if (numbersByColor[colors[k]] < 4) {
+                    ++numbersByColor[colors[k]]
+                    current[j].push(colors[k])
+                    console.log(`push ${colors[k]}`)
+                    continue
+                }
+            }
+        }
+    }
+    return current;
+}
+
+let tryCount = 0;
+while(1) {
+    tryCount++;
+    var result = process();
+    // AIRは2本あるとする
+    var lastBottle = result[result.length - 3];
+    if (lastBottle[3]) {
+        break;
+    }
+}
+result.forEach(bottle => {
+    console.log(`{${bottle[0]},${bottle[1]},${bottle[2]},${bottle[3]}},`)
+})
